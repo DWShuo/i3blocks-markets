@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+# coding=utf-8
+import os
+import sys
+import requests as req
+from bs4 import BeautifulSoup as bf
+
+#Set enviroment variables
+TICKER = os.environ.get('ticker')
+PRECISION = os.environ.get('precision')
+LABEL = os.environ.get('label')
+CRYPTO_FLAG = False
+try:
+    CRYPTO_FLAG = os.environ.get("CRYPTO")
+except:
+    pass
+
+def crypto_price(var):
+    r = req.get('https://api.binance.com/api/v3/ticker/24hr?symbol={}'.format(var))
+    percDelta24hr = float(r.json()["priceChangePercent"])
+    price = float(r.json()["lastPrice"])
+    return(price,percDelta24hr)
+
+def stock_price(var):
+    r = req.get('https://finance.yahoo.com/quote/{}'.format(var))
+    yf_data = bf(r.text,'html.parser')
+    price = float([x.text for x in yf_data.find_all('span', {'class':'Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)'})][0])
+    delta = float([x.text for x in yf_data.find_all('span',{'class':'Pstart(10px)'})][0].split()[0])
+    return(price,delta)
+
+def prettyPrint(price,delta):
+    deltaBoilerplate = '<span color="{}">{}{:.'+str(PRECISION)+'f}%</span>'
+    if delta > 0: 
+         deltaInfo = deltaBoilerplate.format('#3BB92D', '⬆', delta)
+    elif delta < 0: 
+        deltaInfo = deltaBoilerplate.format('#F7555E', '⬇', delta)
+    else: 
+        deltaInfo = deltaBoilerplate.format('#CCCCCC', '', delta)
+    return( (' {:.'+str(PRECISION)+'f} {}').format(price, deltaInfo) )
+
+if(CRYPTO_FLAG):
+    price,delta = crypto_price(TICKER)
+    fulltext = prettyPrint(price,delta)
+else:
+    price,delta = stock_price(TICKER)
+    fulltext = prettyPrint(price,delta)
+print(fulltext)
