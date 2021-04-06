@@ -3,10 +3,10 @@
 ![Screen shot](./i3markets.png)
 
 ### Dependencies
-* i3wm
-* i3blocks
-* Python 3
-* Pip
+* [i3wm](https://i3wm.org/)
+* [i3blocks](https://github.com/vivien/i3blocks)
+* [Python 3](https://www.python.org/downloads/)
+* [Pip](https://pypi.org/project/pip/)
 ### Configurations
 1. Enable execute permission for script.
 ```sh
