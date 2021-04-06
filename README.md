@@ -3,14 +3,15 @@
 ![Screen shot](./i3markets.png)
 
 ### Dependencies
-* i3
-* i3bar
+* i3wm
 * i3blocks
 * Python 3
+* Pip
 ### Configurations
 1. Enable execute permission for script.
 ```sh
 chmod +x i3markets
+pip install -r requirements.txt
 ```
 2. In i3-blocks config, set `markup=pango`.
 ###  Adding Tickers 
